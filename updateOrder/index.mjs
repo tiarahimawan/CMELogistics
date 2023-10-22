@@ -38,9 +38,7 @@ export const handler = async (event) => {
 					body = await dynamo.get({
 						TableName: event.queryStringParameters.TableName,
 						Key: {
-							orderID: Number(
-								event.queryStringParameters.orderID
-							),
+							orderID: event.queryStringParameters.orderID,
 						},
 					})
 				} else {
@@ -52,15 +50,50 @@ export const handler = async (event) => {
 				break
 			case "POST":
 				// creating a new order
-				const newUUID = uuidv4()
 				// create a unique identifier for new order
-				event.body.orderID = uuidv4()
+				event.body["orderID"] = uuidv4()
 				// we then update dynamoDB with the new order
 				console.log("creating new order...", event.body)
-				body = await dynamo.put(JSON.parse(event.body))
+				body = await dynamo.put({
+					TableName: event.queryStringParameters.TableName,
+					Item: event.body,
+				})
 				break
 			case "PUT":
-				body = await dynamo.update(JSON.parse(event.body))
+				// updating a currently existing order
+				// check the type of update
+				switch (event.queryStringParameters.updateType) {
+					case "PICKUP":
+						console.log("order has been picked up...")
+						var order = await dynamo.get({
+							TableName: event.queryStringParameters.TableName,
+							Key: {
+								orderID: event.queryStringParameters.orderID,
+							},
+						})
+						order = order.Item
+						const updateStatus = {
+							updateInfo: event.queryStringParameters.updateInfo,
+							updateLocation:
+								event.queryStringParameters.updateLocation,
+							updateDateTime: new Date().toISOString(),
+						}
+						// we create the map for the orderUpdates since this is the first update
+						order["orderUpdates"] = { 1: updateStatus }
+						// now we put it into dynamoDB
+						body = await dynamo.put({
+							TableName: event.queryStringParameters.TableName,
+							Item: order,
+						})
+						break
+					case "TRANSIT":
+						console.log("order is in transit...")
+						break
+					case "DELIVERED":
+						console.log("order has been delivered...")
+						break
+				}
+				// body = await dynamo.update(JSON.parse(event.body))
 				break
 			default:
 				throw new Error(`Unsupported method "${event.httpMethod}"`)
