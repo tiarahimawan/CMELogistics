@@ -60,6 +60,8 @@ export const handler = async (event) => {
 				})
 				break
 			case "PUT":
+				let updateStatus
+				let numUpdate
 				// updating a currently existing order
 				// check the type of update
 				switch (event.queryStringParameters.updateType) {
@@ -72,13 +74,14 @@ export const handler = async (event) => {
 							},
 						})
 						order = order.Item
-						const updateStatus = {
+						updateStatus = {
 							updateInfo: event.queryStringParameters.updateInfo,
 							updateLocation:
 								event.queryStringParameters.updateLocation,
 							updateDateTime: new Date().toISOString(),
 						}
 						// we create the map for the orderUpdates since this is the first update
+						order.orderStatus = "In Transit"
 						order["orderUpdates"] = { 1: updateStatus }
 						// now we put it into dynamoDB
 						body = await dynamo.put({
@@ -88,12 +91,54 @@ export const handler = async (event) => {
 						break
 					case "TRANSIT":
 						console.log("order is in transit...")
+						var order = await dynamo.get({
+							TableName: event.queryStringParameters.TableName,
+							Key: {
+								orderID: event.queryStringParameters.orderID,
+							},
+						})
+						order = order.Item
+						// we get the number of updates thus far, then add newest update
+						numUpdate = Object.keys(order.orderUpdates).length + 1
+						updateStatus = {
+							updateInfo: event.queryStringParameters.updateInfo,
+							updateLocation:
+								event.queryStringParameters.updateLocation,
+							updateDateTime: new Date().toISOString(),
+						}
+						order.orderUpdates[numUpdate.toString()] = updateStatus
+						// now we put it into dynamoDB
+						body = await dynamo.put({
+							TableName: event.queryStringParameters.TableName,
+							Item: order,
+						})
 						break
 					case "DELIVERED":
 						console.log("order has been delivered...")
+						var order = await dynamo.get({
+							TableName: event.queryStringParameters.TableName,
+							Key: {
+								orderID: event.queryStringParameters.orderID,
+							},
+						})
+						order = order.Item
+						// we get the number of updates thus far, then add newest update
+						numUpdate = Object.keys(order.orderUpdates).length + 1
+						updateStatus = {
+							updateInfo: event.queryStringParameters.updateInfo,
+							updateLocation:
+								event.queryStringParameters.updateLocation,
+							updateDateTime: new Date().toISOString(),
+						}
+						order.orderUpdates[numUpdate.toString()] = updateStatus
+						order.orderStatus = "Delivered"
+						// now we put it into dynamoDB
+						body = await dynamo.put({
+							TableName: event.queryStringParameters.TableName,
+							Item: order,
+						})
 						break
 				}
-				// body = await dynamo.update(JSON.parse(event.body))
 				break
 			default:
 				throw new Error(`Unsupported method "${event.httpMethod}"`)
