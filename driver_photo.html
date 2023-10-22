@@ -12,7 +12,7 @@
 <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 <body>
     
-    <div class="container mt-5" style="width: 90%;">
+    <div id ="app" class="container mt-5" style="width: 90%;">
         <div class="row mb-5">
             <div class="col">
                 <span class="text-center"><h3><strong>LOGISMART</strong></h3></span>
@@ -29,17 +29,22 @@
                         <!-- File Upload Input -->
                         <div class="mb-3">
                             <label for="photoUpload" class="form-label">Select Photo</label>
-                            <input type="file" class="form-control" id="photoUpload">
+                            <input type="file" class="form-control" id="photoUpload" @change="handleFileUpload">
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+        <div class="row mb-4">
+            <div class="col">
+                <img v-if="imagePreview" :src="imagePreview" alt="Uploaded Image" style="max-width: 100%;">
             </div>
         </div>
 
         <!-- Buttons Section -->
         <div class="row mb-2">
             <div class="col-12 col-md-6">
-                <button data-bs-toggle="modal" data-bs-target="#CompletionModal" class="btn btn-outline-primary btn-block mb-2 w-100 rounded-pill" id="saveButton">Save</button>
+                <button data-bs-toggle="modal" data-bs-target="#CompletionModal" class="btn btn-outline-primary btn-block mb-2 w-100 rounded-pill" id="saveButton" @click="handleFileUpload">Save</button>
             </div>
         </div>
         <div class="row mb-2">
@@ -71,6 +76,82 @@
             </div>
         </div> -->
     </div>
+
+    <script>
+        const app = Vue.createApp({
+            data() {
+                return {
+                    // Your data properties here
+                    order_id: "12345",
+                    selectedFile: null, 
+                    imagePreview: null,
+                };
+            },
+            methods: {
+                handleFileUpload(event) {
+                    this.selectedFile = event.target.files[0];
+                    this.generateImagePreview(); // Call the method to generate a preview
+                },
+
+                generateImagePreview() {
+                    if (this.selectedFile) {
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            this.imagePreview = e.target.result;
+                            // Call the uploadedProof function to upload the image
+                            this.uploadedProof()
+                        };
+                        reader.readAsDataURL(this.selectedFile);
+                    } else {
+                        this.imagePreview = null; // Clear the preview if no file is selected
+                    }
+                },
+
+                async uploadedProof() {
+                    const serviceURL = url; 
+                    try {
+                        const response = await fetch(serviceURL, {
+                            method: 'PUT',
+                            headers: {
+                            'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                            delivered_order_id: this.order_id,
+                            delivery_proof: this.selectedFile,
+                            }),
+                        });
+
+                        result = await response.json();
+                        console.log(result);
+                        return Promise.resolve();
+                        } catch (error) {
+                        this.message = error.message;
+                        return Promise.reject(error);
+                        }
+                    },
+                }
+                    // if (this.selectedFile) {
+                    //     const formData = new FormData();
+                    //     formData.append('deliveryProof', this.selectedFile);
+
+                    //     try {
+                    //         const response = await fetch(serviceURLForImageUpload, {
+                    //             method: 'POST', // Use POST to upload the image
+                    //             body: formData,
+                    //         });
+
+                    //         // Handle the response as needed (e.g., check for success)
+
+                    //     } catch (error) {
+                    //         this.message = error.message;
+                    //         // Handle the error
+                    //     }
+                    // }
+            //     },
+            // },
+        });
+        app.mount("#app");
+    </script>
 
 </body>
 </html>

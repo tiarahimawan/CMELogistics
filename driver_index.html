@@ -12,7 +12,7 @@
 <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 <body>
     
-    <div class="container mt-5" style="width: 90%;">
+    <div id="app" class="container mt-5" style="width: 90%;">
         <div class="row mb-3">
             <div class="col">
                 <span class="text-center"><h3><strong>LOGISMART</strong></h3></span>
@@ -26,12 +26,10 @@
                     </div>
                     <div class="card-body">
                         <ul class="list-unstyled">
-                            <li><strong>Order ID:</strong> #100</li>
-                            <li><strong>Receiver:</strong> Tiara</li>
-                            <li><strong>Phone number:</strong> 84330970</li>
-                            <!-- <li><strong>PICK UP:</strong> 313 Orchard Rd</li>
-                            <li><strong>DROP OFF:</strong> 81 Victoria Street</li> -->
-                            <li><strong>Status:</strong> On the way</li>
+                            <li><strong>Order ID:</strong> {{ this.order_id }}</li>
+                            <li><strong>Receiver:</strong> {{ this.receiver }}</li>
+                            <li><strong>Phone number:</strong> {{this.phone_number}}</li>
+                            <li><strong>Status:</strong> {{ this.status }}</li>
                         </ul>
                         <!-- <button class="btn btn-success" id="deliveredButton">Delivered</button>
                         <button class="btn btn-danger ml-2" id="undeliveredButton">Undelivered</button> -->
@@ -46,7 +44,7 @@
                     <div class="card-body">
                         <ul class="list-unstyled">
                             <li><strong>PICK UP</strong></li>
-                            <li>313 Orchard Road</li>
+                            <li>{{ pick_up_address }}</li>
                         </ul>
                     </div>
                 </div>
@@ -56,7 +54,7 @@
                     <div class="card-body">
                         <ul class="list-unstyled">
                             <li><strong>DROP OFF</strong></li>
-                            <li>81 Victoria Street</li>
+                            <li>{{ drop_off_address }}</li>
                         </ul>
                     </div>
                 </div>
@@ -67,7 +65,7 @@
         <!-- Delivered Button -->
         <div class="row mb-2">
             <div class="col-12 col-md-6">
-                <a href="driver_photo.html" class="btn btn-outline-success w-100 rounded-pill" id="deliveredButton">Delivered</a>
+                <a href="driver_photo.html" class="btn btn-outline-success w-100 rounded-pill" id="deliveredButton" @click="deliveredOrder()">Delivered</a>
             </div>
         </div>
         <!-- Undelivered Button -->
@@ -83,13 +81,43 @@
             data() {
                 return {
                     // Your data properties here
+                    user_id: null,
+                    order_id: "12345",
+                    receiver: "Jay",
+                    phone_number: "abcdefg",
+                    status: "On the way",
+                    pick_up_address: "81 Stamford Road",
+                    drop_off_address: "12 Orchard Road",
                 };
             },
             methods: {
-                
-            },
-        });
+                // PERHAPS THIS DELIVERED ORDER METHOD FUNCTION IS NOT NECESSARY AS WE CAN MARK IT AS DELIVERED AFTER THE IMAGE PROOF? 
+                async deliveredOrder(){
+                    // const serviceURL = url;
+                    try {
+                        const response = await fetch(serviceURL, {
+                            method: 'PUT',
+                            headers: {
+                            'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                            delivered_order_id: this.order_id,
+                            // driver_id: this.userId,
+                            status: "Delivered",
+                            }),
+                        });
 
+                        result = await response.json();
+                        console.log(result);
+                        return Promise.resolve();
+                        } catch (error) {
+                        this.message = error.message;
+                        return Promise.reject(error);
+                        }
+                    },
+                }
+
+        });
         app.mount("#app");
     </script>
 
