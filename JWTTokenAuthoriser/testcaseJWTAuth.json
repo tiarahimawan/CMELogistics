@@ -1,0 +1,31 @@
+{
+    "type": "TOKEN",
+    "authorizationToken": "eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJ1c2VybmFtZSI6ImF1ZHJleWsyMDIxIiwiaWF0IjoxNjk4MDcyMDU2fQ.",
+    "methodArn": "arn:aws:execute-api:ap-southeast-1:123456789012:abcdef123/my-api/GET/some/resource",
+    "requestContext": {
+      "requestId": "test-invoke-request",
+      "path": "/my-api/some/resource",
+      "httpMethod": "GET",
+      "extendedRequestId": "test-invoke-extendedRequestId",
+      "requestTime": "12/Oct/2023:04:00:00 +0000",
+      "pathParameters": {},
+      "queryStringParameters": {
+        "param1": "value1",
+        "param2": "value2"
+      },
+      "multiValueQueryStringParameters": {
+        "param1": ["value1", "value2"],
+        "param2": ["value1"]
+      },
+      "stageVariables": {
+        "stageVariable1": "value1",
+        "stageVariable2": "value2"
+      },
+      "requestTimeEpoch": 1634019600000,
+      "resourcePath": "/some/resource",
+      "resourceId": "abcdef123",
+      "domainName": "id.execute-api.ap-southeast-1.amazonaws.com",
+      "stage": "test-invoke-stage"
+    }
+  }
+  
