@@ -1,0 +1,28 @@
+{
+    "body": "{\"username\":\"audreyk2021\", \"password\":\"audreyk2021\"}",
+    "resource": "/{proxy+}",
+    "path": "/path/to/resource",
+    "httpMethod": "POST",
+    "isBase64Encoded": false,
+    "headers": {
+      "Accept": "*/*",
+      "Host": "lambda.amazonaws.com",
+      "User-Agent": "custom-user-agent"
+    },
+    "requestContext": {
+      "accountId": "123456789012",
+      "resourceId": "123456",
+      "stage": "prod",
+      "requestId": "c6af9ac6-7b61-11e6-9a41-93e8deadbeef",
+      "requestTime": "09/Apr/2015:12:34:56 +0000",
+      "httpMethod": "POST",
+      "path": "/prod/path/to/resource",
+      "protocol": "HTTP/1.1",
+      "identity": {
+        "accountId": "123456789012",
+        "userAgent": "custom-user-agent",
+        "user": "user-identifier"
+      }
+    }
+  }
+  
