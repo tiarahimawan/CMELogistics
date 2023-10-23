@@ -25,9 +25,6 @@ export const handler = async (event) => {
 
 	try {
 		switch (event.httpMethod) {
-			case "DELETE":
-				body = await dynamo.delete(JSON.parse(event.body))
-				break
 			case "GET":
 				if (event.queryStringParameters.orderID) {
 					// get only one order
@@ -146,8 +143,6 @@ export const handler = async (event) => {
 	} catch (err) {
 		statusCode = "400"
 		body = err.message
-	} finally {
-		// body = JSON.stringify(body);
 	}
 
 	return {
