@@ -1,0 +1,6 @@
+{
+	"queryStringParameters": {
+		"TableName": "order"
+	},
+	"httpMethod": "GET"
+}

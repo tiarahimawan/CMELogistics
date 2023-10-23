@@ -1,0 +1,10 @@
+{
+	"queryStringParameters": {
+		"TableName": "order",
+		"orderID": "7177c317-88c6-4c34-b55d-9974953e89cb",
+		"updateType": "PICKUP",
+		"updateInfo": "Package has been picked up by courier at designated pickup point.",
+		"updateLocation": "Kuala Lumpur, MY"
+	},
+	"httpMethod": "PUT"
+}

@@ -1,0 +1,23 @@
+{
+	"url": "https://g3vz6kar18.execute-api.ap-southeast-1.amazonaws.com/testStage/",
+	"options": {
+		"method": "POST"
+	},
+	"data": {
+		"addressLine1": "313 Somerset Road",
+		"addressLine2": "",
+		"driverID": "",
+		"estimatedDeliveryDate": "2023-10-27",
+		"orderStatus": "Awaiting Pickup",
+		"originLocation": "Kuala Lumpur, Malaysia",
+		"postalCode": "018979",
+		"recipientEmail": "sam@email.com",
+		"recipientName": "Sam Lee",
+		"recipientPhoneNumber": "+6598293483",
+		"sendDate": "2023-10-20",
+		"senderPlatform": "Lazada",
+		"shipmentCost": "1700",
+		"shipmentWeight": "2000",
+		"orderID": "800ead7a-475f-42b0-8534-88a89c58f414"
+	}
+}
