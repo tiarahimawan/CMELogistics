@@ -1,5 +1,5 @@
 import { DynamoDB } from "@aws-sdk/client-dynamodb"
-import { DynamoDBDocument, DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb"
+import { DynamoDBDocument, DynamoDBDocumentClient, GetCommand } from "@aws-sdk/lib-dynamodb"
 import jwt from 'jsonwebtoken';
 
 const client = new DynamoDB({ region: "ap-southeast-1" });
@@ -20,7 +20,7 @@ export const handler = async (event, context) => {
     };
 
     try {
-        let data = await dynamodb.get(params).promise();
+        let data = await dynamodb.send(new GetCommand(params));
 
         if (data.Item && data.Item.password === password) {
             let token = jwt.sign({ username: username }, '', { algorithm: 'none' });
