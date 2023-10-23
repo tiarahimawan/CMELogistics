@@ -1,0 +1,22 @@
+{
+	"body": {
+		"addressLine1": "313 Somerset Road",
+		"addressLine2": "",
+		"driverID": "",
+		"estimatedDeliveryDate": "2023-10-27",
+		"orderStatus": "Awaiting Pickup",
+		"originLocation": "Kuala Lumpur, Malaysia",
+		"postalCode": "018979",
+		"recipientEmail": "sam@email.com",
+		"recipientName": "Sam Lee",
+		"recipientPhoneNumber": "+6598293483",
+		"sendDate": "2023-10-20",
+		"senderPlatform": "Lazada",
+		"shipmentCost": "1700",
+		"shipmentWeight": "2000"
+	},
+	"queryStringParameters": {
+		"TableName": "order"
+	},
+	"httpMethod": "POST"
+}
