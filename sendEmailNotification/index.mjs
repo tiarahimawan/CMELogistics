@@ -2,15 +2,16 @@ import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses"
 
 const client = new SESClient({ region: "ap-southeast-1" })
 export const handler = (event, context, callback) => {
-	sendMail("Testing AWS SES Emails", "Hello!")
+	console.log(event)
+	sendMail(event.subject, event.data, event.emailRecipient)
 }
 
-async function sendMail(subject, data) {
+async function sendMail(subject, data, recipient) {
 	let responseData
 	// TODO: change ToAddresses to the recipient's email
 	const emailParams = {
 		Destination: {
-			ToAddresses: ["zrtan.2021@scis.smu.edu.sg"],
+			ToAddresses: [recipient],
 		},
 		Message: {
 			Body: {

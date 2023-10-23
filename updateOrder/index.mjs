@@ -138,6 +138,26 @@ export const handler = async (event) => {
 							TableName: event.queryStringParameters.TableName,
 							Item: order,
 						})
+
+						// we invoke the sendEmailNotification lambda function
+						const emailInput = {
+							FunctionName: "sendEmailNotification",
+							Payload: JSON.stringify({
+								subject:
+									"Update on your order with ID: " +
+									order.orderID,
+								data:
+									`Please be informed that your order with ID: ` +
+									order.orderID +
+									`has been delivered as of ` +
+									new Date().toString() +
+									`.`,
+								emailRecipient: order.recipientEmail,
+							}),
+							InvocationType: "Event",
+						}
+						const emailCommand = new InvokeCommand(emailInput)
+						const response = await lambda.send(emailCommand)
 						break
 				}
 
