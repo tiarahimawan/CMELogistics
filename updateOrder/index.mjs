@@ -1,8 +1,12 @@
 import { DynamoDB } from "@aws-sdk/client-dynamodb"
 import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb"
+import { LambdaClient, InvokeCommand } from "@aws-sdk/client-lambda"
 import { v4 as uuidv4 } from "uuid"
 
 const dynamo = DynamoDBDocument.from(new DynamoDB())
+const lambda = new LambdaClient({
+	region: "ap-southeast-1",
+})
 
 /**
  * Demonstrates a simple HTTP endpoint using API Gateway. You have full
@@ -136,6 +140,22 @@ export const handler = async (event) => {
 						})
 						break
 				}
+
+				// we invoke the sendNotification lambda function
+				const input = {
+					FunctionName: "sendNotification",
+					Payload: JSON.stringify({
+						url: "https://g3vz6kar18.execute-api.ap-southeast-1.amazonaws.com/testStage/",
+						options: {
+							method: "POST",
+						},
+						data: order,
+					}),
+					InvocationType: "Event",
+				}
+				const command = new InvokeCommand(input)
+				const response = await lambda.send(command)
+				console.log(response)
 				break
 			default:
 				throw new Error(`Unsupported method "${event.httpMethod}"`)

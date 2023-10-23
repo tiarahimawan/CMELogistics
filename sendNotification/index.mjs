@@ -21,6 +21,8 @@ export const handler = (event, context, callback) => {
 			if (res.headers["content-type"] === "application/json") {
 				body = JSON.parse(body)
 			}
+			// to log in cloudwatch that the api call was successful
+			console.log(body)
 			callback(null, body)
 		})
 	})
