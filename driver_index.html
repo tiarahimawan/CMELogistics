@@ -10,18 +10,18 @@
 </head>
 
 <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-<body>
+<body class="bg-primary">
     
     <div id="app" class="container mt-5" style="width: 90%;">
         <div class="row mb-3">
             <div class="col">
-                <span class="text-center"><h3><strong>LOGISMART</strong></h3></span>
+                <span class="text-center text-light"><h3><strong>LOGISMART</strong></h3></span>
             </div>
         </div>
         <div class="row">
             <div class="col-12 col-md-6">
                 <div class="card mb-3">
-                    <div class="card-header bg-primary text-white">
+                    <div class="card-header bg-light text-dark">
                         <h5 class="card-title">Current Delivery</h5>
                     </div>
                     <div class="card-body">
@@ -40,7 +40,7 @@
 
         <div class="row">
             <div class="col-6 col-md-3">
-                <div class="card mb-3 bg-primary text-white">
+                <div class="card mb-3 bg-warning text-dark">
                     <div class="card-body">
                         <ul class="list-unstyled">
                             <li><strong>PICK UP</strong></li>
@@ -50,7 +50,7 @@
                 </div>
             </div>
             <div class="col-6 col-md-3">
-                <div class="card mb-3 bg-primary text-white">
+                <div class="card mb-3 bg-warning text-dark">
                     <div class="card-body">
                         <ul class="list-unstyled">
                             <li><strong>DROP OFF</strong></li>
@@ -65,13 +65,13 @@
         <!-- Delivered Button -->
         <div class="row mb-2">
             <div class="col-12 col-md-6">
-                <a href="driver_photo.html" class="btn btn-outline-success w-100 rounded-pill" id="deliveredButton" @click="deliveredOrder()">Delivered</a>
+                <a href="driver_photo.html" class="btn btn-info w-100 rounded-pill" id="deliveredButton" @click="deliveredOrder()">Delivered</a>
             </div>
         </div>
         <!-- Undelivered Button -->
         <div class="row mb-2">
             <div class="col-12 col-md-6">
-                <button class="btn btn-outline-danger w-100 rounded-pill" id="deliveredButton">Undelivered</button>
+                <button class="btn btn-danger w-100 rounded-pill" id="deliveredButton">Undelivered</button>
             </div>
         </div>
     </div>  
