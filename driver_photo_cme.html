@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Driver</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous"/>
+</head>
+
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<body class="bg-primary">
+    
+    <div id ="app" class="container mt-5" style="width: 90%;">
+        <div class="row mb-5">
+            <div class="col">
+                <span class="text-center text-light"><h3><strong>LOGISMART</strong></h3></span>
+            </div>
+        </div>
+        <!-- Upload Proof of Photo Section -->
+        <div class="row mb-4">
+            <div class="col-12 col-md-6">
+                <div class="card">
+                    <div class="card-header bg-light text-dark">
+                        <h5 class="card-title">Upload Proof of Photo</h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- File Upload Input -->
+                        <div class="mb-3">
+                            <label for="photoUpload" class="form-label">Select Photo</label>
+                            <input type="file" class="form-control" id="photoUpload" @change="handleFileUpload">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mb-4">
+            <div class="col">
+                <img v-if="imagePreview" :src="imagePreview" alt="Uploaded Image" style="max-width: 100%;">
+            </div>
+        </div>
+
+        <!-- Buttons Section -->
+        <div class="row mb-2">
+            <div class="col-12 col-md-6">
+                <button data-bs-toggle="modal" data-bs-target="#CompletionModal" class="btn btn-info btn-block mb-2 w-100 rounded-pill" id="saveButton" @click="handleFileUpload">Save</button>
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-12 col-md-6 d-flex justify-content-center">
+
+                <button class="btn btn-danger btn-block mb-2 w-100 rounded-pill" id="undeliveredButton">Undelivered</button>
+            </div>
+        </div>
+        
+        <div class="row mb-2">
+            <div class="col-12 col-md-6">
+                <a href="driver_index.html" class="btn btn-secondary btn-block rounded-pill" id="backButton">Back</a>
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-12 col-md-6">
+                <a class="btn btn-secondary btn-block rounded-pill" id="tokenButton">Token</a>
+            </div>
+        </div>
+
+        <!-- MODAL FOR DELIVERY COMPLETION -->
+        <!-- <div class="modal fade" id="CompletionModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Delivery Complete</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Thank you for delivering the package. Have a nice day!</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div> -->
+    </div>
+
+    <script>
+        
+        const app = Vue.createApp({
+            data() {
+                return {
+                    // Your data properties here
+                    order_id: "12345",
+                    selectedFile: null, 
+                    imagePreview: null,
+                    authorizationCode: ''
+                };
+            },
+            mounted() {
+            // Access the authorization code after Vue.js is mounted
+            const urlParams = new URLSearchParams(window.location.search);
+            this.authorizationCode = urlParams.get('code');
+            window.externalAuthorizationCode = this.authorizationCode;
+            // Add a click event listener to the button after Vue.js is mounted
+            },
+            methods: {
+                handleFileUpload(event) {
+                    this.selectedFile = event.target.files[0];
+                    this.generateImagePreview(); // Call the method to generate a preview
+                },
+
+                generateImagePreview() {
+                    if (this.selectedFile) {
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            this.imagePreview = e.target.result;
+                            // Call the uploadedProof function to upload the image
+                            this.uploadedProof()
+                        };
+                        reader.readAsDataURL(this.selectedFile);
+                    } else {
+                        this.imagePreview = null; // Clear the preview if no file is selected
+                    }
+                },
+
+                async uploadedProof() {
+                    const serviceURL = url; 
+                    try {
+                        const response = await fetch(serviceURL, {
+                            method: 'PUT',
+                            headers: {
+                            'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                            delivered_order_id: this.order_id,
+                            delivery_proof: this.selectedFile,
+                            }),
+                        });
+
+                        result = await response.json();
+                        console.log(result);
+                        return Promise.resolve();
+                        } catch (error) {
+                        this.message = error.message;
+                        return Promise.reject(error);
+                        }
+                    },
+                }
+                    // if (this.selectedFile) {
+                    //     const formData = new FormData();
+                    //     formData.append('deliveryProof', this.selectedFile);
+
+                    //     try {
+                    //         const response = await fetch(serviceURLForImageUpload, {
+                    //             method: 'POST', // Use POST to upload the image
+                    //             body: formData,
+                    //         });
+
+                    //         // Handle the response as needed (e.g., check for success)
+
+                    //     } catch (error) {
+                    //         this.message = error.message;
+                    //         // Handle the error
+                    //     }
+                    // }
+            //     },
+            // },
+        });
+        app.mount("#app");
+
+        document.getElementById('tokenButton').addEventListener('click', async function() {
+    try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const authorizationCode = urlParams.get('code'); // Implement this function to extract the code from the URL
+        console.log("hi")
+        console.log(authorizationCode)
+        const response = await fetch('http://localhost:5000/exchange-code', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ authorizationCode }),
+        });
+
+        if (response.ok) {
+            const tokens = await response.json();
+            // Store tokens securely (e.g., in Vuex state, localStorage, or secure HTTP-only cookies)
+            console.log('Received JWT tokens:', tokens);
+        } else {
+            console.error('Failed to exchange authorization code:', response.statusText);
+        }
+    } catch (error) {
+        console.error('Error during token exchange:', error);
+    }
+});
+        
+
+        // document.getElementById('saveButton').addEventListener('click', async function() {
+        //     console.log("hibuttonhi")
+        //     const urlParams = new URLSearchParams(window.location.search);
+        //     const authorizationCode = urlParams.get('code');
+        //     console.log('Authorization Code:', authorizationCode);
+        //     console.log(app.mounted.appContext.config.globalProperties.authorizationCode);
+
+        //     try {
+        //         const response = await fetch('http://localhost:5000/hi');  // Endpoint to retrieve "hi" from Flask
+        //         const data = await response.text();
+        //         console.log(data)
+        //     } catch (error) {
+        //         console.error('Error fetching data:', error);
+        //     }
+        // });
+
+       
+
+        document.getElementById('saveButton').addEventListener('click', async function() {
+            // console.log("hi")
+            // console.log("hi")
+            // const authorizationCode = new URLSearchParams(window.location.search).get('code');
+            // console.log(authorizationCode)
+            try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const authorizationCode = urlParams.get('code'); // Implement this function to extract the code from the URL
+        const response = await fetch('http://localhost:5000/exchange-code', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ authorizationCode }),
+        });
+
+        if (response.ok) {
+            const tokens = await response.json();
+            
+            // Store tokens securely (e.g., in Vuex state, localStorage, or secure HTTP-only cookies)
+            
+            
+            const fileInput = document.getElementById('photoUpload');
+            const file = fileInput.files[0];
+            const accessToken = tokens.access_token;
+            
+            if (file) {
+                try {
+                    const formData = new FormData();
+                    formData.append('file', file);
+                    formData.append('accessToken', accessToken)
+                    // Send a POST request to your Flask app
+                    console.log("check 1")
+                    const postResponse = await fetch('http://localhost:5000/upload_file', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    console.log("check 2")
+                    const result = await postResponse.json();
+                    console.log(result)
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            } else {
+                console.error('No file selected.');
+            }
+        } else {
+            console.error('Failed to exchange authorization code:', response.statusText);
+        }
+    } catch (error) {
+        console.error('Error during token exchange:', error);
+    }
+
+            
+        });
+    </script>
+
+</body>
+</html>
