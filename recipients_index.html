@@ -1,114 +1,173 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Driver</title>
-    <link rel="stylesheet" href="styles.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous"/>
-</head>
+	<head>
+		<meta charset="UTF-8" />
+		<meta
+			http-equiv="X-UA-Compatible"
+			content="IE=edge" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0" />
+		<title>Driver</title>
+		<link
+			rel="stylesheet"
+			href="styles.css" />
+		<link
+			href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+			rel="stylesheet"
+			integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
+			crossorigin="anonymous" />
+	</head>
 
-<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-<body class="bg-primary">
-    
-    <div id="app" class="container mt-5" style="width: 90%;">
-        <div class="row mb-3">
-            <div class="col">
-                <span class="text-center text-light"><h3><strong>LOGISMART</strong></h3></span>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-12 col-md-6">
-                <div class="card mb-3">
-                    <div class="card-header bg-light text-dark">
-                        <h5 class="card-title">Trace and Track</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="mb-3">
-                            <label for="exampleInputEmail1" class="form-label">Please enter your tracking number:</label>
-                            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-                            <!-- <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div> -->
-                        </div>
-                        <div class="col-12 col-md-6 mb-3">
-                            <a href="#delivery_status" class="btn btn-outline-success w-100 rounded-pill" id="deliveredButton" @click="showDeliveryStatus()">Track my Delivery</a>
-                        </div>
+	<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+	<body class="bg-primary">
+		<div
+			id="app"
+			class="container mt-5"
+			style="width: 90%">
+			<div class="row mb-3">
+				<div class="col">
+					<span class="text-center text-light"
+						><h3><strong>LOGISMART</strong></h3></span
+					>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-12">
+					<div class="card mb-3">
+						<div class="card-header bg-light text-dark">
+							<h5 class="card-title">Trace and Track</h5>
+						</div>
+						<div class="card-body">
+							<div class="mb-3">
+								<label
+									for="trackingNumber"
+									class="form-label"
+									>Please enter your tracking number:</label
+								>
+								<input
+									type="text"
+									class="form-control"
+									id="trackingNumber"
+									v-model="orderTrackingNumber"
+									aria-describedby="emailHelp" />
+								<!-- <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div> -->
+							</div>
+							<div class="col-12 col-md-6 mb-3">
+								<a
+									href="#delivery_status"
+									class="btn btn-outline-success w-100 rounded-pill"
+									id="deliveredButton"
+									@click="showDeliveryStatus()"
+									>Track my Delivery</a
+								>
+							</div>
 
-                        <!-- Tracking Result -->
-                        <div v-if="show_status" id="delivery_status" class="col-12 col-md-6 mt-5">
-                            <div class="mb-3">Order ID: {{ order_id }}</div>
-                            <div><h5>Delivery Status</h5></div>
+							<!-- Tracking Result -->
+							<div
+								v-if="show_status"
+								id="delivery_status"
+								class="col-12 mt-5">
+								<div class="mb-3">
+									Order ID: {{ orderTrackingNumber }}
+								</div>
+								<div><h5>Delivery Status</h5></div>
 
-                            <div class="row mb-3">
-                                <div class="col">29-08-23 14:30</div>
-                                <div class="col">Your parcel is out for delivery</div>
-                            </div>
-                            <div class="row mb-1">
-                                <div class="col">28-08-23 11:10</div>
-                                <div class="col">Your parcel has arrived at the sorting facility: SG</div>
-                            </div>
-                        </div>
-                        
-                    </div>
-                </div>
-            </div>
-        </div>
+								<div
+									v-for="orderUpdate in order_data.orderUpdates"
+									class="row mb-1">
+									<div class="col">
+										{{ new
+										Date(orderUpdate.updateDateTime).toString()}}
+									</div>
+									<div class="col">
+										{{ orderUpdate.updateInfo }}
+									</div>
+								</div>
+								<!-- <div class="row mb-3">
+									<div class="col">29-08-23 14:30</div>
+									<div class="col">
+										Your parcel is out for delivery
+									</div>
+								</div>
+								<div class="row mb-1">
+									<div class="col">28-08-23 11:10</div>
+									<div class="col">
+										Your parcel has arrived at the sorting
+										facility: SG
+									</div>
+								</div>
 
-        <div class="row">
-            <div class="col-6 col-md-3">
-                
-            </div>
-            <div class="col-6 col-md-3">
-                
-            </div>
+								{{ tracking_data_table }} -->
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 
-        </div>
-    </div>  
-    
-    <script>
-        const app = Vue.createApp({
-            data() {
-                return {
-                    // Your data properties here
-                    user_id: null,
-                    order_id: "12345",
-                    show_status: false
-                };
-            },
-            methods: {
-                async showDeliveryStatus(){
-                    // const serviceURL = url;
-                    this.show_status = true
-                    // try {
-                    //     const response = await fetch(serviceURL, {
-                    //         method: 'PUT',
-                    //         headers: {
-                    //         'Content-Type': 'application/json',
-                    //         },
-                    //         body: JSON.stringify({
-                    //         delivered_order_id: this.order_id,
-                    //         // driver_id: this.userId,
-                    //         status: "Delivered",
-                    //         }),
-                    //     });
+			<div class="row">
+				<div class="col-6 col-md-3"></div>
+				<div class="col-6 col-md-3"></div>
+			</div>
+		</div>
 
-                    //     result = await response.json();
-                    //     console.log(result);
-                    //     return Promise.resolve();
-                    //     } catch (error) {
-                    //     this.message = error.message;
-                    //     return Promise.reject(error);
-                    //     }
-                    },
-                }
+		<script>
+			const app = Vue.createApp({
+				data() {
+					return {
+						// Your data properties here
+						// user_id: null,
+						orderTrackingNumber: null,
+						show_status: false,
+						order_data: null,
+						tracking_data_table: null,
+					}
+				},
+				methods: {
+					async showDeliveryStatus() {
+						const serviceURL =
+							`https://frrsi09ifc.execute-api.ap-southeast-1.amazonaws.com/getOrdersByOrderID?orderID=` +
+							this.orderTrackingNumber
 
-        });
-        app.mount("#app");
-    </script>
+						try {
+							const response = await fetch(serviceURL, {
+								method: "GET",
+								headers: {
+									"Content-Type": "application/json",
+									"Access-Control-Allow-Origin": "*",
+									"Access-Control-Allow-Methods": "*",
+									"Access-Control-Allow-Headers": "*",
+								},
+							})
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.3/umd/popper.min.js"></script>
+							result = await response.json()
+							this.order_data = result.Item
+							// return Promise.resolve()
+						} catch (error) {
+							this.message = error.message
+							// return Promise.reject(error)
+						}
+						console.log(this.order_data)
 
-</body>
+						// for (const orderUpdate of this.order_data
+						// 	.orderUpdates) {
+						// 	this.tracking_data_table += `
+						//     <div class="row mb-1">
+						//         <div class="col">${orderUpdate.timestamp}</div>
+						//         <div class="col">${orderUpdate.status}</div>
+						//     </div>
+						//     `
+						// }
+
+						this.show_status = true
+					},
+				},
+			})
+			app.mount("#app")
+		</script>
+
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.min.js"></script>
+		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.3/umd/popper.min.js"></script>
+	</body>
 </html>
