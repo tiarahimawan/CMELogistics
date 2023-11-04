@@ -27,8 +27,13 @@ export const handler = async (event) => {
 		"Content-Type": "application/json",
 	}
 
+	// we parse the body of the event only if it exists
+	if (event.body) {
+		event = JSON.parse(event.body)
+	}
+
 	try {
-		switch (event.httpMethod) {
+		switch (event.requestContext.http.method) {
 			case "GET":
 				if (event.queryStringParameters.orderID) {
 					// get only one order
@@ -184,6 +189,8 @@ export const handler = async (event) => {
 		statusCode = "400"
 		body = err.message
 	}
+
+	body = JSON.stringify(body)
 
 	return {
 		statusCode,
