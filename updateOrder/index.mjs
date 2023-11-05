@@ -21,31 +21,53 @@ const lambda = new LambdaClient({
 export const handler = async (event) => {
 	console.log("Received event:", JSON.stringify(event, null, 2))
 
+	const tableName = "order"
+
 	let body
 	let statusCode = "200"
 	const headers = {
 		"Content-Type": "application/json",
 	}
 
+	// we parse the body of the event only if it exists
+	if (event.body) {
+		event.body = JSON.parse(event.body)
+	}
+
 	try {
-		switch (event.httpMethod) {
+		switch (event.requestContext.http.method) {
 			case "GET":
-				if (event.queryStringParameters.orderID) {
+				if (!event.queryStringParameters) {
+					// get all orders
+					body = await dynamo.scan({
+						TableName: tableName,
+					})
+				} else if (event.queryStringParameters.orderID) {
 					// get only one order
 					console.log(
 						"getting order with orderID: ",
 						event.queryStringParameters.orderID
 					)
 					body = await dynamo.get({
-						TableName: event.queryStringParameters.TableName,
+						TableName: tableName,
 						Key: {
 							orderID: event.queryStringParameters.orderID,
 						},
 					})
-				} else {
-					console.log("getting all orders...")
+				} else if (event.queryStringParameters.driverID) {
+					// get all orders by driver
+					console.log(
+						"getting all orders by driverID: ",
+						event.queryStringParameters.driverID
+					)
 					body = await dynamo.scan({
-						TableName: event.queryStringParameters.TableName,
+						TableName: tableName,
+						FilterExpression:
+							"driverID = :driverID AND orderStatus = :orderStatus",
+						ExpressionAttributeValues: {
+							":driverID": event.queryStringParameters.driverID,
+							":orderStatus": "In Transit",
+						},
 					})
 				}
 				break
@@ -56,7 +78,7 @@ export const handler = async (event) => {
 				// we then update dynamoDB with the new order
 				console.log("creating new order...", event.body)
 				body = await dynamo.put({
-					TableName: event.queryStringParameters.TableName,
+					TableName: tableName,
 					Item: event.body,
 				})
 				break
@@ -69,16 +91,15 @@ export const handler = async (event) => {
 					case "PICKUP":
 						console.log("order has been picked up...")
 						var order = await dynamo.get({
-							TableName: event.queryStringParameters.TableName,
+							TableName: tableName,
 							Key: {
 								orderID: event.queryStringParameters.orderID,
 							},
 						})
 						order = order.Item
 						updateStatus = {
-							updateInfo: event.queryStringParameters.updateInfo,
-							updateLocation:
-								event.queryStringParameters.updateLocation,
+							updateInfo: event.body.updateInfo,
+							updateLocation: event.body.updateLocation,
 							updateDateTime: new Date().toISOString(),
 						}
 						// we create the map for the orderUpdates since this is the first update
@@ -86,14 +107,14 @@ export const handler = async (event) => {
 						order["orderUpdates"] = { 1: updateStatus }
 						// now we put it into dynamoDB
 						body = await dynamo.put({
-							TableName: event.queryStringParameters.TableName,
+							TableName: tableName,
 							Item: order,
 						})
 						break
 					case "TRANSIT":
 						console.log("order is in transit...")
 						var order = await dynamo.get({
-							TableName: event.queryStringParameters.TableName,
+							TableName: tableName,
 							Key: {
 								orderID: event.queryStringParameters.orderID,
 							},
@@ -102,22 +123,21 @@ export const handler = async (event) => {
 						// we get the number of updates thus far, then add newest update
 						numUpdate = Object.keys(order.orderUpdates).length + 1
 						updateStatus = {
-							updateInfo: event.queryStringParameters.updateInfo,
-							updateLocation:
-								event.queryStringParameters.updateLocation,
+							updateInfo: event.body.updateInfo,
+							updateLocation: event.body.updateLocation,
 							updateDateTime: new Date().toISOString(),
 						}
 						order.orderUpdates[numUpdate.toString()] = updateStatus
 						// now we put it into dynamoDB
 						body = await dynamo.put({
-							TableName: event.queryStringParameters.TableName,
+							TableName: tableName,
 							Item: order,
 						})
 						break
 					case "DELIVERED":
 						console.log("order has been delivered...")
 						var order = await dynamo.get({
-							TableName: event.queryStringParameters.TableName,
+							TableName: tableName,
 							Key: {
 								orderID: event.queryStringParameters.orderID,
 							},
@@ -126,16 +146,15 @@ export const handler = async (event) => {
 						// we get the number of updates thus far, then add newest update
 						numUpdate = Object.keys(order.orderUpdates).length + 1
 						updateStatus = {
-							updateInfo: event.queryStringParameters.updateInfo,
-							updateLocation:
-								event.queryStringParameters.updateLocation,
+							updateInfo: event.body.updateInfo,
+							updateLocation: event.body.updateLocation,
 							updateDateTime: new Date().toISOString(),
 						}
 						order.orderUpdates[numUpdate.toString()] = updateStatus
 						order.orderStatus = "Delivered"
 						// now we put it into dynamoDB
 						body = await dynamo.put({
-							TableName: event.queryStringParameters.TableName,
+							TableName: tableName,
 							Item: order,
 						})
 
@@ -184,6 +203,8 @@ export const handler = async (event) => {
 		statusCode = "400"
 		body = err.message
 	}
+
+	body = JSON.stringify(body)
 
 	return {
 		statusCode,

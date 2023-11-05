@@ -19,7 +19,7 @@ async function sendMail(subject, data, recipient) {
 			},
 			Subject: { Data: subject },
 		},
-		Source: "xyukimiku@gmail.com",
+		Source: "kotorichan79@gmail.com",
 	}
 
 	try {
