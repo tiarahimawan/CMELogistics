@@ -6,8 +6,10 @@ function login() {
         username: username,
         password: password
     };
+    
+    console.log(data);
 
-    fetch('https://YOUR_BACKEND_ENDPOINT/login', {
+    fetch('https://frrsi09ifc.execute-api.ap-southeast-1.amazonaws.com/login', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -18,6 +20,8 @@ function login() {
     .then(data => {
         if (data.token) {
             alert('Login successful! Token: ' + data.token);
+            window.location.href = '/driver_index_cme.html';
+
         } else {
             alert('Login failed.');
         }
